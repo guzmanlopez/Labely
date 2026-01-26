@@ -1,0 +1,104 @@
+<!--
+Label Studio 配置模板 - 综合标注任务
+支持 BBox + Segment + Text Prompt 多种标注方式
+配合 SAM3 实现智能辅助标注
+
+使用方法:
+1. 在 Label Studio 中创建新项目
+2. 选择 "Custom template"
+3. 粘贴此配置内容
+4. 连接 SAM3 ML Backend 并启用交互式预标注
+-->
+
+<View>
+  <Header value="综合标注任务 - SAM3 智能辅助"/>
+  
+  <View style="display: flex; flex-direction: row;">
+    <View style="flex: 1; margin-right: 10px;">
+      <Text name="instructions" value="选择标注模式，使用文本提示或交互式分割"/>
+    </View>
+    <View style="flex: 0 0 200px;">
+      <Choices name="task_type" toName="image" choice="single" showInline="true">
+        <Choice value="Detection"/>
+        <Choice value="Segmentation"/>
+        <Choice value="TextPrompt" alias="Text Prompt"/>
+      </Choices>
+    </View>
+  </View>
+
+  <Image name="image" value="$image" zoom="true" zoomControl="true" rotateControl="true" crossOrigin="anonymous"/>
+  
+  <!-- ========== 文本提示模式 (SAM3 特性) ========== -->
+  <View visibleWhen="choice-selected" whenTagName="task_type" whenChoiceValue="TextPrompt">
+    <Header value="文本提示分割 - 输入物体描述"/>
+    <TextArea name="text_prompt" toName="image" 
+              placeholder="输入要分割的物体，如: person, car, the red ball on the left..." 
+              rows="2" maxSubmissions="1" editable="true"/>
+    
+    <!-- 分割结果 -->
+    <PolygonLabels name="text_polygon" toName="image" strokeWidth="2" opacity="0.4">
+      <Label value="Detected" background="#FF6B6B"/>
+    </PolygonLabels>
+  </View>
+  
+  <!-- ========== 目标检测模式 ========== -->
+  <View visibleWhen="choice-selected" whenTagName="task_type" whenChoiceValue="Detection">
+    <Header value="目标检测 - 绘制边界框"/>
+    <RectangleLabels name="bbox" toName="image" strokeWidth="2" opacity="0.5" smart="true">
+      <Label value="Person" background="#FF6B6B"/>
+      <Label value="Car" background="#4ECDC4"/>
+      <Label value="Bicycle" background="#45B7D1"/>
+      <Label value="Motorcycle" background="#96CEB4"/>
+      <Label value="Bus" background="#FFEAA7"/>
+      <Label value="Truck" background="#DDA0DD"/>
+      <Label value="Traffic Light" background="#98D8C8"/>
+      <Label value="Stop Sign" background="#F39C12"/>
+      <Label value="Dog" background="#9B59B6"/>
+      <Label value="Cat" background="#3498DB"/>
+      <Label value="Other" background="#95A5A6"/>
+    </RectangleLabels>
+  </View>
+
+  <!-- ========== 实例分割模式 ========== -->
+  <View visibleWhen="choice-selected" whenTagName="task_type" whenChoiceValue="Segmentation">
+    <Header value="实例分割 - 点击或框选触发 SAM3"/>
+    
+    <!-- 交互提示点 -->
+    <KeyPointLabels name="sam_points" toName="image" strokeWidth="3" opacity="0.9" smart="true">
+      <Label value="Positive" background="#00FF00" hotkey="p"/>
+      <Label value="Negative" background="#FF0000" hotkey="n"/>
+    </KeyPointLabels>
+    
+    <!-- 交互边界框 -->
+    <RectangleLabels name="sam_bbox" toName="image" strokeWidth="2" opacity="0.3" smart="true">
+      <Label value="SAM Prompt" background="#3498DB"/>
+    </RectangleLabels>
+    
+    <!-- 分割结果 -->
+    <PolygonLabels name="polygon" toName="image" strokeWidth="2" opacity="0.4">
+      <Label value="Person" background="#FF6B6B"/>
+      <Label value="Vehicle" background="#4ECDC4"/>
+      <Label value="Animal" background="#45B7D1"/>
+      <Label value="Object" background="#96CEB4"/>
+      <Label value="Building" background="#FFEAA7"/>
+      <Label value="Nature" background="#DDA0DD"/>
+      <Label value="Food" background="#98D8C8"/>
+      <Label value="Other" background="#95A5A6"/>
+    </PolygonLabels>
+    
+    <!-- Brush 精修 -->
+    <BrushLabels name="brush" toName="image" strokeWidth="15" opacity="0.3">
+      <Label value="Refine" background="#E74C3C"/>
+    </BrushLabels>
+  </View>
+
+  <!-- ========== 通用标签 (始终可见) ========== -->
+  <Header value="附加信息"/>
+  <TextArea name="notes" toName="image" placeholder="添加备注..." rows="2" maxSubmissions="1"/>
+  
+  <Choices name="difficulty" toName="image" choice="single">
+    <Choice value="Easy"/>
+    <Choice value="Medium"/>
+    <Choice value="Hard"/>
+  </Choices>
+</View>

@@ -1,0 +1,49 @@
+<!--
+Label Studio 配置模板 - Segment 分割标注任务
+支持 SAM3 文本提示自动分割
+
+使用方法:
+1. 在 Label Studio 中创建新项目
+2. 选择 "Custom template"
+3. 粘贴此配置内容
+4. 连接 SAM3 ML Backend 并启用交互式预标注
+-->
+
+<View>
+  <Header value="Segment 分割标注任务 - SAM3 智能分割"/>
+  <Text name="instructions" value="输入文本描述目标物体，SAM3 将自动生成分割掩码"/>
+  
+  <Image name="image" value="$image" zoom="true" zoomControl="true" rotateControl="true"/>
+  
+  <!-- 文本提示输入 (SAM3 特性) -->
+  <Header value="文本提示 (Text Prompt)"/>
+  <TextArea name="text_prompt" toName="image" 
+            placeholder="输入要分割的物体描述，如: person, car, dog..." 
+            rows="1" maxSubmissions="1" editable="true"/>
+  
+  <!-- 用于交互的关键点 -->
+  <KeyPointLabels name="keypoints" toName="image" strokeWidth="3" opacity="0.9" smart="true">
+    <Label value="Positive" background="#00FF00" hotkey="p"/>
+    <Label value="Negative" background="#FF0000" hotkey="n"/>
+  </KeyPointLabels>
+  
+  <!-- 用于交互的边界框 -->
+  <RectangleLabels name="bbox" toName="image" strokeWidth="2" opacity="0.5" smart="true">
+    <Label value="Object" background="#3498db"/>
+  </RectangleLabels>
+  
+  <!-- SAM3 生成的多边形分割结果 -->
+  <PolygonLabels name="polygon" toName="image" strokeWidth="2" opacity="0.4">
+    <Label value="Person" background="#FF6B6B"/>
+    <Label value="Car" background="#4ECDC4"/>
+    <Label value="Dog" background="#45B7D1"/>
+    <Label value="Cat" background="#96CEB4"/>
+    <Label value="Object" background="#FFEAA7"/>
+    <Label value="Other" background="#C9C9C9"/>
+  </PolygonLabels>
+  
+  <!-- Brush 标注（用于精细调整） -->
+  <BrushLabels name="brush" toName="image" strokeWidth="15" opacity="0.3">
+    <Label value="Refine" background="#E74C3C"/>
+  </BrushLabels>
+</View>

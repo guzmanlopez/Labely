@@ -1,0 +1,7 @@
+# Label Studio ML 适配器依赖
+# 轻量级，只做格式转换
+
+git+https://github.com/heartexlabs/label-studio-ml-backend.git
+requests>=2.31.0
+label-studio-converter
+Pillow>=10.0.0

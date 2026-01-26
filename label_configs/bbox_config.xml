@@ -1,0 +1,46 @@
+<!--
+Label Studio 配置模板 - BBox 边界框标注任务
+支持 SAM3 自动生成分割掩码
+
+使用方法:
+1. 在 Label Studio 中创建新项目
+2. 选择 "Custom template"
+3. 粘贴此配置内容
+4. 连接 SAM3 ML Backend
+-->
+
+<View>
+  <Header value="BBox 边界框标注任务 - SAM3 自动分割"/>
+  <Text name="instructions" value="绘制边界框或输入文本描述，SAM3 将自动生成分割掩码"/>
+  
+  <Image name="image" value="$image" zoom="true" zoomControl="true" rotateControl="true"/>
+  
+  <!-- 文本提示输入 (SAM3 特性) -->
+  <TextArea name="text_prompt" toName="image" 
+            placeholder="输入目标物体描述..." 
+            rows="1" maxSubmissions="1" editable="true"/>
+  
+  <!-- 边界框标注 -->
+  <RectangleLabels name="bbox" toName="image" strokeWidth="2" opacity="0.5">
+    <Label value="Person" background="#FF0000"/>
+    <Label value="Vehicle" background="#00FF00"/>
+    <Label value="Animal" background="#0000FF"/>
+    <Label value="Object" background="#FFFF00"/>
+    <Label value="Other" background="#00FFFF"/>
+  </RectangleLabels>
+  
+  <!-- 用于 SAM3 交互的关键点（可选） -->
+  <KeyPointLabels name="keypoints" toName="image" strokeWidth="2" opacity="0.8">
+    <Label value="Foreground" background="#00FF00"/>
+    <Label value="Background" background="#FF0000"/>
+  </KeyPointLabels>
+  
+  <!-- 显示 SAM3 生成的多边形分割结果 -->
+  <PolygonLabels name="polygon" toName="image" strokeWidth="2" opacity="0.3">
+    <Label value="Person" background="#FF0000"/>
+    <Label value="Vehicle" background="#00FF00"/>
+    <Label value="Animal" background="#0000FF"/>
+    <Label value="Object" background="#FFFF00"/>
+    <Label value="Other" background="#00FFFF"/>
+  </PolygonLabels>
+</View>
